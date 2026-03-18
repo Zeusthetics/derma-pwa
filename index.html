@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1D9E75"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="DermSec"/>
+<title>Derm Secretary</title>
+<link rel="manifest" href="manifest.json"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#1D9E75;--gl:#E1F5EE;--gd:#0F6E56;--p:#7F77DD;--pl:#EEEDFE;--pd:#534AB7;--a:#BA7517;--al:#FAEEDA;--b:#378ADD;--bl:#E6F1FB;--bd:#185FA5;--r:#E24B4A;--rl:#FCEBEB;--rd:#A32D2D;--o:#D85A30;--ol:#FAECE7;--od:#993C1D;--t:#1a1a1a;--t2:#555;--t3:#999;--br:#e5e5e5;--bg:#f5f5f5;--card:#fff;--rad:12px;--rads:8px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);min-height:100vh;padding-bottom:80px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--br);display:flex;z-index:200}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;cursor:pointer;color:var(--t3);font-size:10px;font-weight:600;gap:3px;-webkit-tap-highlight-color:transparent}
+.nb.on{color:var(--g)}
+.ni{width:22px;height:22px}
+.page{display:none;padding-bottom:1rem}
+.page.on{display:block}
+.topbar{background:var(--g);color:#fff;padding:1rem 1.25rem .85rem;position:sticky;top:0;z-index:100}
+.tr{display:flex;align-items:center;justify-content:space-between}
+.an{font-size:17px;font-weight:700}
+.db{font-size:11px;font-weight:600;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px}
+.gr{font-size:12px;opacity:.85;margin-top:3px}
+.pw{padding:.75rem 1.25rem;background:var(--g)}
+.pr{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.9);margin-bottom:5px}
+.pb{height:5px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden}
+.pf{height:100%;background:#fff;border-radius:3px;transition:width .4s}
+.ph{padding:1rem 1rem .5rem;background:var(--card);border-bottom:1px solid var(--br);margin-bottom:.75rem}
+.pt{font-size:17px;font-weight:700}
+.ps{font-size:12px;color:var(--t2);margin-top:2px}
+.con{padding:0 1rem}
+.sl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin:1rem 0 .5rem}
+.card{background:var(--card);border:1px solid var(--br);border-radius:var(--rad);padding:.9rem 1rem;margin-bottom:.75rem}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.bg2{background:var(--gl);color:var(--gd)}.bb2{background:var(--bl);color:var(--bd)}.bp2{background:var(--pl);color:var(--pd)}.ba2{background:var(--al);color:var(--a)}.br3{background:var(--rl);color:var(--rd)}
+.task{display:flex;align-items:flex-start;gap:10px;padding:.8rem 1rem;background:var(--card);border:1px solid var(--br);border-radius:var(--rads);margin-bottom:7px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .2s}
+.task:active{background:var(--bg)}
+.task.dn{opacity:.45}
+.task.dn .tn{text-decoration:line-through;color:var(--t3)}
+.chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--br);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.chk.on{background:var(--g);border-color:var(--g)}
+.ti{flex:1}
+.tb{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-bottom:4px}
+.bam{background:var(--bl);color:var(--bd)}.bpm{background:var(--pl);color:var(--pd)}.bwk{background:var(--al);color:var(--a)}.bpc{background:var(--ol);color:var(--od)}
+.tn{font-size:13px;font-weight:600;line-height:1.35;color:var(--t)}
+.tno{font-size:11px;color:var(--t2);margin-top:3px;line-height:1.45}
+.dcs{display:flex;gap:5px;overflow-x:auto;padding:.25rem 0 .5rem;margin-bottom:.5rem;scrollbar-width:none}
+.dcs::-webkit-scrollbar{display:none}
+.dc{flex-shrink:0;font-size:12px;font-weight:600;padding:5px 13px;border-radius:20px;border:1.5px solid var(--br);background:var(--card);color:var(--t2);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dc.on{background:var(--g);color:#fff;border-color:var(--g)}
+.wc{background:var(--gl);border:1px solid #9FE1CB;border-radius:var(--rad);padding:.85rem 1rem;margin-bottom:.75rem}
+.wt2{font-size:12px;font-weight:700;color:var(--gd);margin-bottom:.5rem}
+.wt{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(29,158,117,.15);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wt:last-child{border-bottom:none}
+.wck{width:18px;height:18px;border-radius:4px;border:2px solid var(--g);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.wck.on{background:var(--g)}
+.wt.dn .wn{text-decoration:line-through;opacity:.5}
+.wn{font-size:12px;color:var(--gd);font-weight:500}
+.nb2{background:var(--rl);border:1px solid #f7c1c1;border-radius:var(--rads);padding:.7rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:10px;cursor:pointer}
+.nt{flex:1;font-size:12px;color:var(--rd);line-height:1.4}
+.nt strong{display:block;font-size:13px;margin-bottom:2px}
+.rb{background:#FFF3E0;border:1px solid #FFB74D;border-radius:var(--rad);padding:1rem;margin-bottom:.75rem}
+.rbt{font-size:14px;font-weight:700;color:#E65100;margin-bottom:4px}
+.rbs{font-size:12px;color:#BF360C;line-height:1.5}
+.rbd{font-size:11px;font-weight:700;color:#E65100;margin-top:.5rem}
+.ns{background:var(--card);border:1px solid var(--br);border-radius:var(--rads);padding:.75rem 1rem;margin-bottom:.75rem}
+.nsr{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;color:var(--t)}
+.nss{font-size:11px;color:var(--t2);margin-top:2px}
+.tg{width:44px;height:24px;background:var(--br);border-radius:12px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.tg.on{background:var(--g)}
+.tk{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tg.on .tk{left:22px}
+.dnc{background:var(--gl);border:1px solid #9FE1CB;border-radius:var(--rad);padding:1rem;text-align:center;margin-bottom:.75rem;display:none}
+.dnc p{font-size:14px;color:var(--gd);font-weight:700}
+.dnc small{font-size:11px;color:var(--gd);opacity:.7}
+.gpr{background:var(--card);border:1px solid var(--br);border-radius:var(--rad);padding:1rem;margin-bottom:.75rem}
+.gpt{font-size:13px;font-weight:700;color:var(--t);margin-bottom:.75rem}
+.gprw{margin-bottom:.6rem}
+.gplr{display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:4px}
+.gpn{font-weight:600;color:var(--t)}
+.gpb{height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.gpf{height:100%;border-radius:4px;transition:width .5s}
+.fg{background:var(--g)}.fb{background:var(--b)}.fp{background:var(--p)}
+.tc2{background:var(--card);border:1px solid var(--br);border-radius:var(--rad);margin-bottom:.75rem;overflow:hidden}
+.tch{padding:.85rem 1rem;display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tci{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tcin{flex:1}
+.tcn{font-size:14px;font-weight:700;color:var(--t)}
+.tcs2{font-size:11px;color:var(--t2);margin-top:2px}
+.tcsess{padding:0 1rem 1rem}
+.sr{display:flex;align-items:center;gap:10px;padding:.6rem 0;border-top:1px solid var(--br)}
+.sd{width:28px;height:28px;border-radius:50%;border:2px solid var(--br);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700;color:var(--t3);transition:all .2s}
+.sd.ds{background:var(--g);border-color:var(--g);color:#fff}
+.sd.as2{border-color:var(--g);color:var(--g)}
+.si{flex:1}
+.sn2{font-size:13px;font-weight:600;color:var(--t)}
+.sd2{font-size:11px;color:var(--t2);margin-top:1px}
+.ss{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+.ssd{background:var(--gl);color:var(--gd)}.ssu{background:var(--bg);color:var(--t3)}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:flex-end}
+.mo.show{display:flex}
+.md{background:var(--card);border-radius:20px 20px 0 0;padding:1.25rem;width:100%;max-height:80vh;overflow-y:auto}
+.mdt{font-size:16px;font-weight:700;color:var(--t);margin-bottom:1rem}
+.mdc{float:right;font-size:22px;cursor:pointer;color:var(--t3);margin-top:-6px;line-height:1}
+.fg2{margin-bottom:.85rem}
+.fl{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:.4rem;display:block}
+.fi{width:100%;padding:.6rem .8rem;border:1.5px solid var(--br);border-radius:var(--rads);font-size:13px;color:var(--t);background:var(--card);-webkit-appearance:none}
+.fi:focus{outline:none;border-color:var(--g)}
+.btn{width:100%;padding:.75rem;border-radius:var(--rads);font-size:14px;font-weight:700;border:none;cursor:pointer;margin-top:.5rem}
+.btg{background:var(--g);color:#fff}
+.bto{background:transparent;border:1.5px solid var(--br);color:var(--t2);margin-top:.5rem}
+textarea.fi{resize:vertical;min-height:70px}
+.tli{display:flex;gap:10px;padding:.6rem 0;position:relative}
+.tll{position:absolute;left:11px;top:28px;bottom:-10px;width:1.5px;background:var(--br)}
+.tld{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-top:2px}
+.tlc{flex:1;padding-bottom:.5rem}
+.tlt2{font-size:13px;font-weight:700;color:var(--t)}
+.tld2{font-size:11px;color:var(--t2);margin-top:1px}
+.tln{font-size:11px;color:var(--t2);margin-top:4px;line-height:1.4;background:var(--bg);padding:.4rem .6rem;border-radius:6px}
+.mr{display:flex;align-items:center;gap:10px;padding:.6rem 0;border-bottom:1px solid var(--br)}
+.mr:last-child{border-bottom:none}
+.mc{width:22px;height:22px;border-radius:50%;border:2px solid var(--br);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.mc.on{background:var(--g);border-color:var(--g)}
+.mi{flex:1}
+.mn{font-size:13px;font-weight:600;color:var(--t)}
+.mw{font-size:11px;color:var(--t2);margin-top:1px}
+.rl{display:block;text-align:right;font-size:11px;color:var(--t3);margin-top:.5rem;cursor:pointer;text-decoration:underline}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem}
+.met{background:var(--bg);border-radius:var(--rads);padding:.75rem;text-align:center}
+.mv{font-size:22px;font-weight:700;color:var(--t)}
+.ml{font-size:11px;color:var(--t2);margin-top:2px}
+.es{text-align:center;padding:2rem 1rem;color:var(--t3);font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="page on" id="page-routine">
+  <div class="topbar">
+    <div class="tr"><div class="an">Derm Secretary</div><div class="db" id="datebadge">–</div></div>
+    <div class="gr" id="greeting">Loading...</div>
+  </div>
+  <div class="pw">
+    <div class="pr"><span id="progtxt">0 of 0 steps</span><span id="progpct">0%</span></div>
+    <div class="pb"><div class="pf" id="progfill" style="width:0%"></div></div>
+  </div>
+  <div class="con" style="padding-top:.75rem">
+    <div class="nb2" id="notifbar" style="display:none"></div>
+    <div id="recoverybanner"></div>
+    <div class="ns">
+      <div class="nsr">
+        <div><div>5-min reminders</div><div class="nss">Repeats until all steps done</div></div>
+        <div class="tg on" id="toggle" onclick="toggleNotif()"><div class="tk"></div></div>
+      </div>
+    </div>
+    <div class="dcs" id="daychips"></div>
+    <div id="tasklist"></div>
+    <div class="wc">
+      <div class="wt2">After-wudhu — pat dry + 1 drop Oxygluta</div>
+      <div id="wudhutasks"></div>
+      <div id="wcount" style="font-size:11px;color:var(--gd);margin-top:.5rem;opacity:.75">0 of 5 done</div>
+    </div>
+    <div class="dnc" id="donecard"><p>All done for this session</p><small>Skin is being taken care of.</small></div>
+    <span class="rl" onclick="resetDay()">Reset today</span>
+  </div>
+</div>
+
+<div class="page" id="page-treatments">
+  <div class="ph"><div class="pt">Treatment tracker</div><div class="ps">Glass skin journey — 6 months</div></div>
+  <div class="con">
+    <div class="gpr">
+      <div class="gpt">Glass skin progress</div>
+      <div class="gprw"><div class="gplr"><span class="gpn">MNRF sessions</span><span id="mp-txt">1/3</span></div><div class="gpb"><div class="gpf fg" id="mp-bar" style="width:33%"></div></div></div>
+      <div class="gprw"><div class="gplr"><span class="gpn">Chemical peels</span><span id="pp-txt">0/3</span></div><div class="gpb"><div class="gpf fb" id="pp-bar" style="width:0%"></div></div></div>
+      <div class="gprw" style="margin-bottom:0"><div class="gplr"><span class="gpn">Overall glass skin</span><span id="op-txt">17%</span></div><div class="gpb"><div class="gpf fp" id="op-bar" style="width:17%"></div></div></div>
+    </div>
+    <div class="tc2">
+      <div class="tch" onclick="togSess('mnrf')">
+        <div class="tci" style="background:var(--gl)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#1D9E75" stroke-width="1.5"/><path d="M9 5v4l2.5 2.5" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="tcin"><div class="tcn">MNRF sessions</div><div class="tcs2">Microneedling RF · Scar + texture</div></div>
+        <span class="badge bg2" id="mb">1/3</span>&nbsp;<span style="color:var(--t3)" id="ma">▾</span>
+      </div>
+      <div class="tcsess" id="mnrf-sessions" style="display:none"></div>
+    </div>
+    <div class="tc2">
+      <div class="tch" onclick="togSess('peel')">
+        <div class="tci" style="background:var(--bl)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2C5.5 2 3 5 3 8.5c0 4 3.5 7.5 6 8.5 2.5-1 6-4.5 6-8.5C15 5 12.5 2 9 2z" stroke="#378ADD" stroke-width="1.5"/></svg></div>
+        <div class="tcin"><div class="tcn">Chemical peels</div><div class="tcs2">Mandelic acid · Tone + texture</div></div>
+        <span class="badge bb2" id="pb">0/3</span>&nbsp;<span style="color:var(--t3)" id="pa">▾</span>
+      </div>
+      <div class="tcsess" id="peel-sessions" style="display:none"></div>
+    </div>
+    <div class="sl">Glass skin milestones</div>
+    <div class="card" id="milestones"></div>
+    <button class="btn btg" onclick="openModal()">+ Log a treatment session</button>
+  </div>
+</div>
+
+<div class="page" id="page-history">
+  <div class="ph"><div class="pt">Skin journal</div><div class="ps">Every session on record</div></div>
+  <div class="con">
+    <div class="row2">
+      <div class="met"><div class="mv" id="ht">0</div><div class="ml">Sessions done</div></div>
+      <div class="met"><div class="mv" id="hd">0</div><div class="ml">Days on routine</div></div>
+    </div>
+    <div class="sl">Session history</div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<div class="mo" id="modal">
+  <div class="md">
+    <div class="mdt">Log treatment session<span class="mdc" onclick="closeModal()">×</span></div>
+    <div class="fg2"><label class="fl">Treatment type</label><select class="fi" id="lt"><option value="mnrf">MNRF (Microneedling RF)</option><option value="peel">Chemical peel</option></select></div>
+    <div class="fg2"><label class="fl">Session number</label><select class="fi" id="ls"><option value="1">Session 1</option><option value="2">Session 2</option><option value="3">Session 3</option></select></div>
+    <div class="fg2"><label class="fl">Date</label><input type="date" class="fi" id="ld"/></div>
+    <div class="fg2"><label class="fl">Recovery days</label><select class="fi" id="lr"><option value="7">7 days (MNRF standard)</option><option value="3">3 days (light peel)</option><option value="5">5 days (medium peel)</option><option value="0">0 days</option></select></div>
+    <div class="fg2"><label class="fl">Clinic notes (optional)</label><textarea class="fi" id="ln" placeholder="e.g. depth 1.5mm, 3 passes, mild redness..."></textarea></div>
+    <button class="btn btg" onclick="logSession()">Save session</button>
+    <button class="btn bto" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nb on" id="nav-routine" onclick="switchPage('routine')">
+    <svg class="ni" viewBox="0 0 22 22" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+    Routine
+  </div>
+  <div class="nb" id="nav-treatments" onclick="switchPage('treatments')">
+    <svg class="ni" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg>
+    Treatments
+  </div>
+  <div class="nb" id="nav-history" onclick="switchPage('history')">
+    <svg class="ni" viewBox="0 0 22 22" fill="none"><path d="M11 7v4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/></svg>
+    Journal
+  </div>
+</div>
+
+<script>
+'use strict';
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const SCHED={Sun:{m:true,mask:false},Mon:{m:true,mask:false},Tue:{m:false,mask:true},Wed:{m:true,mask:false},Thu:{m:true,mask:false},Fri:{m:false,mask:true},Sat:{m:true,mask:false}};
+const SK='derm4',NK='notif4',TK='treat4',RK='recov4',JK='jour4';
+const MS=[
+  {id:'m1',n:'Barrier rebuilt',w:'Week 2',c:'Switched from soap + moisturising after wudhu consistently'},
+  {id:'m2',n:'Texture improvement visible',w:'Month 1',c:'Niacinamide + Clinda gel consistent 30 days'},
+  {id:'m3',n:'First peel done',w:'Month 2',c:'Chemical peel session 1 completed'},
+  {id:'m4',n:'Scar 40% faded',w:'Month 3',c:'MNRF session 2 + peel 2 done'},
+  {id:'m5',n:'Glass skin glow emerging',w:'Month 4',c:'Peel 3 done + hydration protocol consistent'},
+  {id:'m6',n:'Scar 80% invisible',w:'Month 5',c:'MNRF session 3 completed'},
+  {id:'m7',n:'Korean glass skin achieved',w:'Month 6',c:'All 3 MNRF + 3 peels + daily routine maintained'},
+];
+let state={},notifOn=true,treats={},currentDay=DAYS[new Date().getDay()],ntimer=null;
+
+function load(){
+  try{state=JSON.parse(localStorage.getItem(SK)||'{}')}catch(e){state={}}
+  notifOn=localStorage.getItem(NK)!=='false';
+  try{treats=JSON.parse(localStorage.getItem(TK)||'{}')}catch(e){treats={}}
+  if(!treats.mnrf) treats.mnrf=[];
+  if(!treats.peel) treats.peel=[];
+  if(!treats.mnrf.length){
+    const today=new Date().toISOString().split('T')[0];
+    treats.mnrf.push({session:1,date:today,recovery:7,notes:'First MNRF session. 5mm scar + overall texture targeted.',type:'mnrf'});
+    const end=new Date();end.setDate(end.getDate()+7);
+    localStorage.setItem(RK,end.toISOString().split('T')[0]);
+    saveTreats();
+  }
+  if(!localStorage.getItem(JK)) localStorage.setItem(JK,new Date().toISOString().split('T')[0]);
+}
+function save(){localStorage.setItem(SK,JSON.stringify(state));localStorage.setItem(NK,String(notifOn))}
+function saveTreats(){localStorage.setItem(TK,JSON.stringify(treats))}
+function kk(d,id){return d+'_'+id}
+function isRec(){const e=localStorage.getItem(RK);if(!e)return false;return new Date().toISOString().split('T')[0]<=e}
+function recLeft(){const e=localStorage.getItem(RK);if(!e)return 0;return Math.max(0,Math.ceil((new Date(e)-new Date())/(864e5))+1)}
+function ck(){return'<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'}
+
+function getTasks(d){
+  const s=SCHED[d];
+  if(isRec()) return {
+    'Morning — recovery mode':[
+      {id:'r1',n:'Cold water rinse only',no:'No actives. Healing post-procedure.',b:'bpc',t:'AM'},
+      {id:'r2',n:'Oxygluta moisturizer (08)',no:'Press gently. No rubbing.',b:'bpc',t:'AM'},
+      {id:'r3',n:'Lakame SPF 50 PA+++ (05)',no:'Critical — post-procedure skin burns fast.',b:'bpc',t:'AM'},
+    ],
+    'Night — recovery mode':[
+      {id:'r4',n:'Oxygluta facewash (09)',no:'Gentle, lukewarm. Pat dry.',b:'bpc',t:'PM'},
+      {id:'r5',n:'Calamine + Vit E lotion (04)',no:'Full face. Soothes redness and micro-trauma.',b:'bpc',t:'PM'},
+      {id:'r6',n:'Oxygluta moisturizer (08)',no:'Seal everything in. Deep barrier repair.',b:'bpc',t:'PM'},
+    ]
+  };
+  const am=[
+    {id:'a1',n:'Rinse face — cold water only',no:'No cleanser in morning.',b:'bam',t:'AM'},
+    {id:'a2',n:'Clindamycin + Nicotinamide gel (01)',no:'Thin layer full face. Wait 60 sec.',b:'bam',t:'AM'},
+    {id:'a3',n:'Oxygluta moisturizer (08)',no:'Press into slightly damp skin.',b:'bam',t:'AM'},
+    {id:'a4',n:'Lakame SPF 50 PA+++ (05)',no:'Generous. Always last AM step.',b:'bam',t:'AM'},
+  ];
+  const mid=[{id:'a5',n:'Reapply IPCA SPF 30 (03)',no:'After Dhuhr/Asr wudhu. Light pat.',b:'bam',t:'Midday'}];
+  const pmb=[{id:'p1',n:'Oxygluta facewash (09)',no:'Gentle lather 60 sec. Pat dry.',b:'bpm',t:'PM'}];
+  const pml=[
+    {id:'p2',n:'VRH gel (07) — scar + spots only',no:'Dab on 5mm scar only. Wait 2 mins.',b:'bpm',t:'PM'},
+    {id:'p3',n:'Melacare cream (02)',no:'Rice grain, thin layer. Avoid lips/eyes.',b:'bpm',t:'PM'},
+    {id:'p4',n:'Oxygluta moisturizer (08) over Melacare',no:'Sandwich method — reduces irritation.',b:'bpm',t:'PM'},
+  ];
+  const pmk=[
+    {id:'p5',n:'Charcoal mask (06)',no:'Full face, 10–15 mins, rinse.',b:'bwk',t:'PM'},
+    {id:'p6',n:'Calamine + Vit E lotion (04)',no:'After mask. Soothes redness.',b:'bwk',t:'PM'},
+  ];
+  return{'Morning':am,'Midday':mid,'Night':[...pmb,...(s.m?pml:pmk)]};
+}
+
+function getProg(d){const secs=getTasks(d);const all=Object.values(secs).flat();const done=all.filter(t=>state[kk(d,t.id)]).length;return{done,total:all.length}}
+function getUndone(d){return Object.values(getTasks(d)).flat().filter(t=>!state[kk(d,t.id)]).map(t=>t.n)}
+
+function renderRoutine(day){
+  currentDay=day;
+  const now=new Date();
+  document.getElementById('datebadge').textContent=now.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+  const h=now.getHours();
+  document.getElementById('greeting').textContent=h<12?'Good morning — morning routine awaits':h<17?'Good afternoon — midday check':' Good evening — night routine time';
+
+  const chips=document.getElementById('daychips');chips.innerHTML='';
+  DAYS.forEach(d=>{const c=document.createElement('div');c.className='dc'+(d===day?' on':'');c.textContent=d;c.onclick=()=>renderRoutine(d);chips.appendChild(c);});
+
+  const rb=document.getElementById('recoverybanner');
+  if(isRec()&&day===DAYS[now.getDay()]){
+    const left=recLeft();
+    rb.innerHTML=`<div class="rb"><div class="rbt">Recovery mode — ${left} day${left!==1?'s':''} remaining</div><div class="rbs">Post-MNRF protocol only. No actives until recovery ends. Skin is healing.</div><div class="rbd">No Melacare · No Clindamycin gel · No VRH gel · No charcoal mask</div></div>`;
+  } else rb.innerHTML='';
+
+  const{done,total}=getProg(day);
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('progfill').style.width=pct+'%';
+  document.getElementById('progpct').textContent=pct+'%';
+  document.getElementById('progtxt').textContent=done+' of '+total+' steps';
+
+  const nb=document.getElementById('notifbar');
+  if(Notification.permission==='denied'){
+    nb.innerHTML=`<div style="font-size:16px">🔕</div><div class="nt"><strong>Notifications blocked</strong>Settings → Apps → Chrome → Notifications → Allow</div>`;
+    nb.style.display='flex';nb.onclick=null;
+  } else if(Notification.permission!=='granted'){
+    nb.innerHTML=`<div style="font-size:16px">🔔</div><div class="nt"><strong>Allow notifications</strong>Tap — get 5-min reminders until routine done</div>`;
+    nb.style.display='flex';
+    nb.onclick=async()=>{if(await Notification.requestPermission()==='granted'){startNotif();renderRoutine(day);}};
+  } else nb.style.display='none';
+
+  document.getElementById('toggle').className='tg'+(notifOn?' on':'');
+
+  const tl=document.getElementById('tasklist');tl.innerHTML='';
+  Object.entries(getTasks(day)).forEach(([sec,tasks])=>{
+    const lbl=document.createElement('div');lbl.className='sl';lbl.textContent=sec;tl.appendChild(lbl);
+    tasks.forEach(t=>{
+      const isDone=!!state[kk(day,t.id)];
+      const el=document.createElement('div');el.className='task'+(isDone?' dn':'');
+      el.innerHTML=`<div class="chk${isDone?' on':''}">${isDone?ck():''}</div><div class="ti"><div class="tb ${t.b}">${t.t}</div><div class="tn">${t.n}</div><div class="tno">${t.no}</div></div>`;
+      el.onclick=()=>{state[kk(day,t.id)]=!state[kk(day,t.id)];save();renderRoutine(day);checkDone(day);};
+      tl.appendChild(el);
+    });
+  });
+
+  const wt=document.getElementById('wudhutasks');wt.innerHTML='';let wd=0;
+  for(let i=1;i<=5;i++){
+    const k=kk(day,'w'+i);const d=!!state[k];if(d)wd++;
+    const el=document.createElement('div');el.className='wt'+(d?' dn':'');
+    el.innerHTML=`<div class="wck${d?' on':''}">${d?ck():''}</div><div class="wn">Wudhu ${i} — pat dry + 1 drop Oxygluta</div>`;
+    el.onclick=()=>{state[k]=!state[k];save();renderRoutine(day);};
+    wt.appendChild(el);
+  }
+  document.getElementById('wcount').textContent=wd+' of 5 wudhu moisturised';
+  document.getElementById('donecard').style.display=(pct===100&&total>0)?'block':'none';
+}
+
+function renderTreatments(){
+  const md=treats.mnrf.length,pd=treats.peel.length;
+  document.getElementById('mb').textContent=md+'/3';
+  document.getElementById('pb').textContent=pd+'/3';
+  document.getElementById('mp-txt').textContent=md+'/3';
+  document.getElementById('pp-txt').textContent=pd+'/3';
+  document.getElementById('mp-bar').style.width=Math.round(md/3*100)+'%';
+  document.getElementById('pp-bar').style.width=Math.round(pd/3*100)+'%';
+  const ov=Math.round((md+pd)/6*100);
+  document.getElementById('op-txt').textContent=ov+'%';
+  document.getElementById('op-bar').style.width=ov+'%';
+
+  function renderSessions(type,el,done,upcoming){
+    el.innerHTML='';
+    for(let i=1;i<=3;i++){
+      const s=treats[type].find(x=>x.session===i);
+      const isNext=!s&&i===done+1;
+      const r=document.createElement('div');r.className='sr';
+      const dt=s?fmtDate(s.date):type==='mnrf'?(i===2?'~Month 3':i===3?'~Month 5':''):(i===1?'~Month 2':i===2?'~Month 3':'~Month 4');
+      r.innerHTML=`<div class="sd ${s?'ds':isNext?'as2':''}">${i}</div><div class="si"><div class="sn2">${type==='mnrf'?'MNRF':'Chemical peel'} session ${i}</div><div class="sd2">${dt}</div></div><span class="ss ${s?'ssd':'ssu'}">${s?'Done':isNext?'Next up':'Pending'}</span>`;
+      el.appendChild(r);
+      if(s&&s.notes){const n=document.createElement('div');n.style.cssText='font-size:11px;color:var(--t2);padding:.3rem 0 .3rem 38px;line-height:1.4;border-top:1px solid var(--br)';n.textContent=s.notes;el.appendChild(n);}
+    }
+  }
+  renderSessions('mnrf',document.getElementById('mnrf-sessions'),md);
+  renderSessions('peel',document.getElementById('peel-sessions'),pd);
+
+  const mc=document.getElementById('milestones');mc.innerHTML='';
+  MS.forEach(m=>{
+    const on=!!state['ms_'+m.id];
+    const r=document.createElement('div');r.className='mr';
+    r.innerHTML=`<div class="mc${on?' on':''}">${on?ck():''}</div><div class="mi"><div class="mn">${m.n}</div><div class="mw">${m.w} · ${m.c}</div></div>`;
+    r.onclick=()=>{state['ms_'+m.id]=!state['ms_'+m.id];save();renderTreatments();};
+    mc.appendChild(r);
+  });
+}
+
+function renderHistory(){
+  const all=[...treats.mnrf,...treats.peel].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  document.getElementById('ht').textContent=all.length;
+  const start=localStorage.getItem(JK);
+  document.getElementById('hd').textContent=start?Math.max(1,Math.ceil((new Date()-new Date(start))/864e5)):1;
+  const hl=document.getElementById('history-list');hl.innerHTML='';
+  if(!all.length){hl.innerHTML='<div class="es">No sessions logged yet.<br>Log your first treatment to start your journal.</div>';return;}
+  all.forEach((s,i)=>{
+    const isMnrf=s.type==='mnrf';
+    const col=isMnrf?'var(--g)':'var(--b)';
+    const el=document.createElement('div');el.className='tli';
+    el.innerHTML=`${i<all.length-1?'<div class="tll"></div>':''}<div class="tld" style="background:${col}">${s.session}</div><div class="tlc"><div class="tlt2">${isMnrf?'MNRF':'Chemical peel'} — Session ${s.session}</div><div class="tld2">${fmtDate(s.date)}${s.recovery>0?' · '+s.recovery+' day recovery':''}</div>${s.notes?'<div class="tln">'+s.notes+'</div>':''}</div>`;
+    hl.appendChild(el);
+  });
+}
+
+function fmtDate(d){if(!d)return'';return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
+
+function openModal(){document.getElementById('ld').value=new Date().toISOString().split('T')[0];document.getElementById('modal').classList.add('show');}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function logSession(){
+  const type=document.getElementById('lt').value;
+  const session=parseInt(document.getElementById('ls').value);
+  const date=document.getElementById('ld').value;
+  const recovery=parseInt(document.getElementById('lr').value);
+  const notes=document.getElementById('ln').value.trim();
+  if(!date){alert('Please select a date');return;}
+  treats[type]=treats[type].filter(s=>s.session!==session);
+  treats[type].push({session,date,recovery,notes,type});
+  treats[type].sort((a,b)=>a.session-b.session);
+  saveTreats();
+  if(recovery>0){const end=new Date(date);end.setDate(end.getDate()+recovery);localStorage.setItem(RK,end.toISOString().split('T')[0]);}
+  document.getElementById('ln').value='';
+  closeModal();renderTreatments();renderHistory();renderRoutine(currentDay);
+}
+
+function togSess(type){
+  const el=document.getElementById(type+'-sessions');
+  const ar=document.getElementById(type==='mnrf'?'ma':'pa');
+  const vis=el.style.display==='none';
+  el.style.display=vis?'block':'none';
+  ar.textContent=vis?'▴':'▾';
+}
+
+function switchPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-'+name).classList.add('on');
+  document.getElementById('nav-'+name).classList.add('on');
+  if(name==='treatments') renderTreatments();
+  if(name==='history') renderHistory();
+  if(name==='routine') renderRoutine(currentDay);
+}
+
+async function sendNotif(title,body,tag){
+  if(!notifOn||Notification.permission!=='granted')return;
+  if('serviceWorker' in navigator){const reg=await navigator.serviceWorker.ready;reg.active&&reg.active.postMessage({type:'NOTIFY',title,body,tag});}
+}
+function startNotif(){
+  if(ntimer)clearInterval(ntimer);if(!notifOn)return;
+  ntimer=setInterval(async()=>{
+    const today=DAYS[new Date().getDay()];const undone=getUndone(today);if(!undone.length)return;
+    const rec=isRec();
+    await sendNotif(rec?'Recovery routine pending':'Skin routine pending',undone.length+' step'+(undone.length>1?'s':'')+' left — '+undone[0],'derm-r');
+  },5*60*1000);
+}
+function stopNotif(){if(ntimer){clearInterval(ntimer);ntimer=null;}}
+window.toggleNotif=function(){notifOn=!notifOn;save();notifOn?startNotif():stopNotif();document.getElementById('toggle').className='tg'+(notifOn?' on':'');};
+function checkDone(day){const{done,total}=getProg(day);if(done===total&&total>0)sendNotif('All done!','Skin routine complete for this session.','derm-done');}
+window.resetDay=function(){Object.keys(state).filter(k=>k.startsWith(currentDay+'_')).forEach(k=>delete state[k]);save();renderRoutine(currentDay);};
+
+async function init(){
+  load();
+  if('serviceWorker' in navigator){try{await navigator.serviceWorker.register('./sw.js');}catch(e){}}
+  if(Notification.permission==='granted'&&notifOn)startNotif();
+  renderRoutine(currentDay);
+  setTimeout(async()=>{
+    if(Notification.permission==='granted'&&notifOn){const u=getUndone(currentDay);if(u.length)await sendNotif('Derm Secretary',u.length+' routine steps pending','derm-i');}
+  },3000);
+}
+init();
+</script>
+</body>
+</html>
